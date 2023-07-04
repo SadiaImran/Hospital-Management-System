@@ -1,0 +1,17 @@
+34,1,dr farukh,available
+30,1,dr gasi,available
+20,3,dr varun,available
+45,1,dr sadia,available
+30,1,dr gasi,available
+45,1,dr sadia,available
+30,1,dr gasi,available
+87,4,dr kashif,available
+92,4,dr varun ,available
+92,4,dr varun ,available
+87,4,dr kashif,available
+77,2,dr farukh,available
+97,2,dr wasif,available
+97,2,dr wasif,available
+77,2,dr farukh,available
+56,1,dr dania,available
+75,1,dr sadia,available

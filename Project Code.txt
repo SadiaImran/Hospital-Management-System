@@ -1,0 +1,660 @@
+import java.io.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Random;
+import java.util.Scanner;
+
+class Pro1 {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        Random random = new Random();
+        Scanner scannerString = new Scanner(System.in);
+        String[] doctor = new String[4];
+        String[] rooms = new String[1];
+        String[] patient = new String[12];
+        // patient array
+        while (true) {
+            System.out.println("1. Enter: \n2. Exit:");
+            int choice = scanner.nextInt();
+            if (choice == 1) {
+                System.out.println("""
+                        Select your module for further access you can select from:
+                        1. Patient
+                        2.  Admin\s""");
+                int module = scanner.nextInt();
+                if (module == 1) {
+                        System.out.println("1. Sign Up\n2. Log In");
+                        int answer = scanner.nextInt();
+                        if (answer == 1) {
+                            while (true) {
+                                System.out.println("Press 1 to enter patient's Data or 0 to exit");
+                                String check = scanner.next();
+                                if (check.equals("0")) break;
+                                while (true) {
+                                    patient[0] = String.valueOf(random.nextInt(0, 50));
+                                    String[] patient_data = read(patient[0], 0);
+                                    if (patient_data.length == 0) {
+                                        System.out.println("Unique");
+                                        break;
+                                    } else System.out.println(Arrays.toString(patient_data));
+                                }
+
+                                System.out.println("Enter your Name: ");//index 1
+                                patient[1] = scannerString.next();
+                                System.out.println("Enter your Email: "); //index 2
+                                patient[2] = scannerString.next();
+                                System.out.println("Enter your Password: ");//index 3
+                                patient[3] = scannerString.next();
+                                System.out.println("Enter your date of birth ( in letters: ");//index 4
+                                patient[4] = scannerString.next();
+                                System.out.println("Select your gender: male/female ");//index 5
+                                patient[5] = scannerString.next();
+                                System.out.println("Enter your Martial Status: Single/Married/Divorced ");//index 6
+                                patient[6] = scannerString.next();
+                                System.out.println("Enter your Disease: ");//index 7
+                                patient[7] = scannerString.next();
+                                System.out.println("Enter your roomType: Null/Economy/Business ");//index 8
+                                patient[8] = scannerString.next();
+                                System.out.println("Enter your Contact Number: e.g 03xx");//index 9
+                                patient[9] = scannerString.next();
+                                System.out.println("Enter your Age: e.g 19");//index 10
+                                patient[10] = scannerString.next();
+                                write(patient);
+                                System.out.println("You have successfully entered your data. ");
+                            }
+                        }
+                        else if (answer == 2) {
+                            String email = scannerString.next();
+                            String password = scannerString.next();
+                            String[] patientEmail = read(email, 2);
+                            String[] patientPasswords = read(password, 3);
+                            if (patientEmail[2].equals(email) && patientPasswords[3].equals(password)) {
+                                System.out.println("You logged in");
+
+                            } else {
+                                System.out.println("Incorrect Email or password");
+                            }
+                        } else System.out.println("Invalid");
+
+                            System.out.println("""
+                                    Select from the following options:
+                                    1.Appointment
+                                    2.Emergency Room
+                                    3.Bill""");
+                            int options = scannerString.nextInt();
+                            if (options == 1) {
+                                System.out.println("""
+                                        Choose Departments:\s
+                                        1. Cardiology\s
+                                        2. Orthopedic\s
+                                        3. Gynaecology\s
+                                        4. Physiotherapy\s
+                                        """);
+                                String appoint = scannerString.next();
+                                appointment(appoint,1);
+                                while (true) {
+                                    System.out.println("Enter doctors id to be booked: ");
+                                    String id = scannerString.next();
+                                    if (checkDoctor(id, 1).equalsIgnoreCase(id)) {
+                                        System.out.println("Appointed");
+                                        readDeletedDoctor(id, 0);
+                                        deleteDoctorRow(id);
+                                        break;
+                                    } else System.out.println("Not available.\nPlease select from available doctors");
+
+
+                                }
+                                System.out.println("//////////////////////////////////////");
+                                System.out.println("Do you want to pay bill? ");
+                                String ans = scannerString.next();
+                                if (ans.equals("y")){
+                                    System.out.println("enter doctors id :");
+                                    String idDeletedDoctor = scannerString.next();
+                                    readDeletedDoctorBack(idDeletedDoctor,0);
+                                }
+
+
+                            } else if (options == 2) {
+                                while (true) {
+                                    bookRooms(0);
+                                    System.out.println("Enter room number to be booked: ");
+                                    String roomNum = scannerString.next();
+                                    readDeletedRooms(roomNum,0);
+                                    deleteRoomsRow(roomNum);
+                                    System.out.println("//////////////////////////////////////");
+                                    System.out.println("Do you want to pay bill? ");
+                                    String ans = scannerString.next();
+                                    if (ans.equals("y")){
+                                        System.out.println("enter room :");
+                                        String deletedRoom = scannerString.next();
+                                        readDeletedRoomsBack(deletedRoom,0);
+                                    }
+                                    else break;
+                                    }
+                                }
+                             else if (options == 3) {
+                                System.out.println("1.Bill for room.\n" +
+                                        "2.Bill for appointment");
+                                int option = scanner.nextInt();
+                                if (option == 1) {
+                                    System.out.println("Enter room number: ");
+                                    String roomNumber = scannerString.next();
+                                    readDeletedRoomsBack(roomNumber,0);
+                                    System.out.println("Bill for your room : Rs " + bill(patient,option));
+                                } else if (option == 2) {
+                                    System.out.println("enter doctors id :");
+                                    String idDeletedDoctor = scannerString.next();
+                                    readDeletedDoctorBack(idDeletedDoctor,0);
+                                    System.out.println("Bill for your room : Rs " + bill(patient,option));
+                                }
+                            }
+                } else if (module == 2) {
+                    while (true) {
+                        System.out.println("Enter your username and password: ");
+                        String userAdmin = scannerString.nextLine();
+                        String passwordAdmin = scannerString.nextLine();
+                        if (userAdmin.equals("abc") && passwordAdmin.equals("123")) {
+                            System.out.println("1. Doctor\n" +
+                                    "2. Patient");
+                            int ans = scanner.nextInt();
+                            if (ans == 1) {
+                                while (true) {
+                                    System.out.println("""
+                                            1. Add Doctor
+                                            2. Delete Doctor
+                                            3. Add room""");
+                                    int addDelete = scanner.nextInt();
+                                    if (addDelete == 1) {
+                                        while (true) {
+                                            doctor[0] = String.valueOf(random.nextInt(51, 101));
+                                            String[] doctor_data = readDoctor(doctor[0], 0);
+                                            if (doctor_data.length == 0) {
+                                                System.out.println("Unique");
+                                                System.out.println(doctor[0]);
+                                                break;
+                                            } else System.out.println(Arrays.toString(doctor_data));
+                                        }
+                                        System.out.println("""
+                                                Choose Departments:\s
+                                                1. Cardiology\s
+                                                2. Orthopedic\s
+                                                3. Gynaecology\s
+                                                4. Physiotherapy\s
+                                                """);
+                                        System.out.println("Enter department: ");
+                                        doctor[1] = scannerString.nextLine();
+                                        System.out.println("Enter doctor: ");
+                                        doctor[2] = scannerString.nextLine();
+                                        doctor[3] = "available";
+                                        writeDoctor(doctor);
+                                        //write(myArray);
+                                    } else if (addDelete == 2) {
+                                        System.out.println("Enter doctors id to be deleted: ");
+                                        String id = scannerString.next();
+                                        deleteDoctorRow(id);
+                                    }else if (addDelete == 3){
+                                        while (true) {
+                                        System.out.println("Do you want to add a room? ");
+                                        String t = scannerString.next();
+                                        if (t.equals("y")) {
+                                                System.out.println("Enter room number to be added: ");
+                                                rooms[0] = scannerString.next();
+                                                writeRooms(rooms);
+                                            }
+                                        else break;
+                                        }
+                                    }
+                                    else break;
+                                }
+                            } else if (ans == 2) {
+                                while (true) {
+                                    System.out.println("""
+                                            Select from the following options:\s
+                                            1. To display data
+                                            2. Delete data
+                                            0. To Exit""");
+                                    int options = scanner.nextInt();
+                                    if (options == 1) {
+                                        System.out.println("enter patients id");
+                                        String id = scannerString.next();
+                                        String[] patient_data = read(id, 0);
+                                        displayPatientData(patient_data);
+                                    } else if (options == 2) {
+                                        System.out.println("enter id to be deleted");
+                                        String id = scannerString.next();
+                                        deleteRow(id);
+                                    } else break;
+                                }
+                            } else System.out.println("Invalid input");
+                            break;
+                        } else System.out.println("Invalid username or password. ");
+                    }
+                }
+
+            }
+        else
+ break;
+
+        }
+        }
+        //program ends here
+
+    //methods start
+    public static void displayPatientData(String[] patient) {
+        try {
+
+
+            System.out.println("Welcome " + patient[1] + "\nid: " + patient[0] + "\n" +
+                    "Welcome to Patient Zone" + "\n" +
+                    "Your data is as follow: " + "\n" +
+                    "Email: " + patient[2] + "\n" +
+                    "Date of birth: " + patient[4] + "\n" +
+                    "Age: " + patient[10] + "\n" +
+                    "Gender: " + patient[5] + "\n" +
+                    "Martial Status: " + patient[6] + "\n" +
+                    "Disease: " + patient[7] + "\n" +
+                    "Room Type: " + patient[8] + "\n" +
+                    "Contact number: " + patient[9]);
+        }
+        catch (Exception e ){
+            System.out.println("Id not found");
+        }
+
+    }
+
+    public static void write(String[] array) {
+        String row = String.join(",", array);
+        try (
+                FileWriter fw = new FileWriter("data.txt", true);
+                BufferedWriter bw = new BufferedWriter(fw);
+                PrintWriter out = new PrintWriter(bw)
+        ) {
+            out.println(row);
+        } catch (IOException e) {
+            // File writing/opening failed at some stage.
+        }
+
+    }
+
+    public static void writeRooms(String[] array) {
+        String row = String.join(",", array);
+        try (
+                FileWriter fw = new FileWriter("rooms.txt", true);
+                BufferedWriter bw = new BufferedWriter(fw);
+                PrintWriter out = new PrintWriter(bw)
+        ) {
+            out.println(row);
+        } catch (IOException e) {
+            // File writing/opening failed at some stage.
+        }
+
+    }
+    public static void writeDoctor(String[] array) {
+        String row = String.join(",", array);
+        try (
+                FileWriter fw = new FileWriter("myDoctor.txt", true);
+                BufferedWriter bw = new BufferedWriter(fw);
+                PrintWriter out = new PrintWriter(bw)
+        ) {
+            out.println(row);
+        } catch (IOException e) {
+            // File writing/opening failed at some stage.
+        }
+
+    }
+
+    public static String[] readDoctor(String id,int index) {
+        String[] data1 = {};
+        try {
+            System.out.println("reading start");
+
+            Scanner myFileReader = new Scanner(new File("myDoctor.txt"));
+            while (myFileReader.hasNextLine()) {
+                String line = myFileReader.nextLine();
+                String[] data = line.split(",");
+                if (data[index].equals(id)) {
+                    myFileReader.close();
+                    return data;
+                }
+            }
+        } catch (FileNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
+        return data1;
+    }
+
+    public static String checkDoctor(String id,int index) {
+        //String[] data1 = {};
+        try {
+            System.out.println("reading start");
+
+            Scanner myFileReader = new Scanner(new File("myDoctor.txt"));
+            while (myFileReader.hasNextLine()) {
+                String line = myFileReader.nextLine();
+                String[] data = line.split(",");
+                if (data[index].equals(id)) {
+                    myFileReader.close();
+                    return id;
+                }
+            }
+        } catch (FileNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
+        return "0";
+    }
+
+    public static String[] read(String id,int index)  {
+        String[] data1 = {};
+        try {
+            System.out.println("reading start");
+
+            Scanner myFileReader = new Scanner(new File("data.txt"));
+            while (myFileReader.hasNextLine()) {
+                String line = myFileReader.nextLine();
+                String[] data = line.split(",");
+                if (data[index].equals(id)) {
+                    myFileReader.close();
+                    return data;
+                }
+            }
+        } catch (FileNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
+        return data1;
+    }
+
+    public static void deleteRow(String id) {
+        String tempFile = "temp.txt";
+        File oldFile = new File("data.txt");
+        File newFile = new File(tempFile);
+
+        String currentLine;
+        String[] data;
+        try {
+            FileWriter fw = new FileWriter(tempFile, true);
+            BufferedWriter bw = new BufferedWriter(fw);
+            PrintWriter pw = new PrintWriter(bw);
+
+            FileReader fr = new FileReader("data.txt");
+            BufferedReader br = new BufferedReader(fr);
+
+            while ((currentLine = br.readLine()) != null) {
+                data = currentLine.split(",");
+                if (!data[0].equalsIgnoreCase(id)) {
+                    pw.println(currentLine);
+                } else System.out.printf("%s's data deleted\n", data[1]);
+            }
+            pw.flush();
+            pw.close();
+            fr.close();
+            br.close();
+            bw.close();
+            fw.close();
+
+            oldFile.delete();
+            File dump = new File("data.txt");
+            newFile.renameTo(dump);
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+
+    public static int bill(String[] patient,int option) {
+        Scanner scanner = new Scanner(System.in);
+        int numberOfDays, economyPerDay, businessPerDay,  fare = 0;
+        if (option == 1) {
+            System.out.println("Enter number of days you want to stay in a room: ");
+            numberOfDays = scanner.nextInt();
+
+            if (patient[8].equals("economy")) {
+                economyPerDay = 2000;
+                fare = economyPerDay * numberOfDays;
+
+            } else if (patient[8].equals("business")) {
+                businessPerDay = 5000;
+                fare= businessPerDay * numberOfDays;
+            }
+            return fare;
+        } else if (option == 2) {
+            fare = 5000;
+        }
+
+        return fare;
+    }
+    public static void deleteDoctorRow(String id) {
+        String tempFile = "Temp.txt";
+        File oldFile = new File("myDoctor.txt");
+        File newFile = new File(tempFile);
+
+        String currentLine;
+        String[] data;
+        try {
+            FileWriter fw = new FileWriter(tempFile, true);
+            BufferedWriter bw = new BufferedWriter(fw);
+            PrintWriter pw = new PrintWriter(bw);
+            FileReader fr = new FileReader("myDoctor.txt");
+            BufferedReader br = new BufferedReader(fr);
+
+            while ((currentLine = br.readLine()) != null) {
+                data = currentLine.split(",");
+                if ((!data[0].equalsIgnoreCase(id))) {
+                    pw.println(currentLine);
+                } else System.out.printf("%s's data deleted\n", data[0]);
+            }
+            pw.flush();
+            pw.close();
+            fr.close();
+            br.close();
+            bw.close();
+            fw.close();
+
+            oldFile.delete();
+            File dump = new File("myDoctor.txt");
+            newFile.renameTo(dump);
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+
+
+    public static void appointment(String id, int index) {
+        //String[] data1 = {};
+
+        try {
+            System.out.println("reading start");
+            ArrayList<String> doctor = new ArrayList<>();
+            ArrayList<String> doctorID = new ArrayList<>();
+            ArrayList<String> doctorAvailability = new ArrayList<>();
+            Scanner myFileReader = new Scanner(new File("myDoctor.txt"));
+            while (myFileReader.hasNextLine()) {
+                String line = myFileReader.nextLine();
+                String[] data = line.split(",");
+                if (data[index].equals(id)) {
+                    doctor.add(data[2]);
+                    doctorID.add(data[0]);
+                    doctorAvailability.add(data[3]);
+                }
+
+            }
+            System.out.println("We have following doctors available : ");
+            for (int i =0 ;i<doctor.size() ; i++){
+                System.out.println(doctor.get(i) +" " +doctorID.get(i) +" " +doctorAvailability.get(i));
+            }
+            myFileReader.close();
+        } catch (FileNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public static void bookRooms( int index) {
+        //String[] data1 = {};
+
+        try {
+            System.out.println("reading start");
+            System.out.println("We have following rooms available: ");
+            Scanner myFileReader = new Scanner(new File("rooms.txt"));
+            while (myFileReader.hasNextLine()) {
+                String line = myFileReader.nextLine();
+                String[] data = line.split(",");
+                //if (data[index].equals(id)) {
+                System.out.println(data[index]);
+                //}
+            }
+            myFileReader.close();
+        } catch (FileNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+    public static void readDeletedDoctor(String id, int index) {
+        //String[] data1 = {};
+        String[] deletedDoctors =new String[4];
+        try {
+            // System.out.println("reading start");
+
+            Scanner myFileReader = new Scanner(new File("myDoctor.txt"));
+            while (myFileReader.hasNextLine()) {
+                String line = myFileReader.nextLine();
+                String[] data = line.split(",");
+                if (data[index].equals(id)) {
+                    deletedDoctors[0] = data[0];
+                    deletedDoctors[1] = data[1];
+                    deletedDoctors[2] = data[2];
+                    deletedDoctors[3] = data[3];
+                    writeDeletedDoctor(deletedDoctors);
+
+                }
+            }myFileReader.close();
+        } catch (FileNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
+
+    }
+    public static void readDeletedDoctorBack(String id, int index) {
+        //String[] data1 = {};
+        String[] deletedDoctors =new String[4];
+        try {
+            //System.out.println("reading start");
+
+            Scanner myFileReader = new Scanner(new File("myDeletedDoctor.txt"));
+            while (myFileReader.hasNextLine()) {
+                String line = myFileReader.nextLine();
+                String[] data = line.split(",");
+                if (data[index].equals(id)) {
+                    deletedDoctors[0] = data[0];
+                    deletedDoctors[1] = data[1];
+                    deletedDoctors[2] = data[2];
+                    deletedDoctors[3] = data[3];
+                    writeDoctor(deletedDoctors);
+                }
+            }myFileReader.close();
+        } catch (FileNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
+
+    }
+
+    public static void writeDeletedDoctor(String[] array) {
+        String row = String.join(",", array);
+        try (
+                FileWriter fw = new FileWriter("myDeletedDoctor.txt", true);
+                BufferedWriter bw = new BufferedWriter(fw);
+                PrintWriter out = new PrintWriter(bw)
+        ) {
+            out.println(row);
+        } catch (IOException e) {
+            // File writing/opening failed at some stage.
+        }
+
+    }
+
+    public static void writeDeletedRooms(String[] array) {
+        String row = String.join(",", array);
+        try (
+                FileWriter fw = new FileWriter("myDeletedRooms.txt", true);
+                BufferedWriter bw = new BufferedWriter(fw);
+                PrintWriter out = new PrintWriter(bw)
+        ) {
+            out.println(row);
+        } catch (IOException e) {
+            // File writing/opening failed at some stage.
+        }
+
+    }
+
+    public static void readDeletedRoomsBack(String id, int index) {
+        //String[] data1 = {};
+        String[] deletedRooms =new String[1];
+        try {
+            //System.out.println("reading start");
+
+            Scanner myFileReader = new Scanner(new File("myDeletedRooms.txt"));
+            while (myFileReader.hasNextLine()) {
+                String line = myFileReader.nextLine();
+                String[] data = line.split(",");
+                if (data[index].equals(id)) {
+                    deletedRooms[0] = data[0];
+                    writeRooms(deletedRooms);
+                }
+            }myFileReader.close();
+        } catch (FileNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
+
+    }
+
+    public static void readDeletedRooms(String id, int index) {
+        //String[] data1 = {};
+        String[] deletedRooms =new String[1];
+        try {
+            // System.out.println("reading start");
+
+            Scanner myFileReader = new Scanner(new File("rooms.txt"));
+            while (myFileReader.hasNextLine()) {
+                String line = myFileReader.nextLine();
+                String[] data = line.split(",");
+                if (data[index].equals(id)) {
+                    deletedRooms[0] = data[0];
+                    writeDeletedRooms(deletedRooms);
+
+                }
+            }myFileReader.close();
+        } catch (FileNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public static void deleteRoomsRow(String id) {
+        String tempFile = "Temp.txt";
+        File oldFile = new File("rooms.txt");
+        File newFile = new File(tempFile);
+
+        String currentLine;
+        String[] data;
+        try {
+            FileWriter fw = new FileWriter(tempFile, true);
+            BufferedWriter bw = new BufferedWriter(fw);
+            PrintWriter pw = new PrintWriter(bw);
+            FileReader fr = new FileReader("rooms.txt");
+            BufferedReader br = new BufferedReader(fr);
+
+            while ((currentLine = br.readLine()) != null) {
+                data = currentLine.split(",");
+                if ((!data[0].equalsIgnoreCase(id))) {
+                    pw.println(currentLine);
+                } else System.out.printf("%s's data deleted\n", data[0]);
+            }
+            pw.flush();
+            pw.close();
+            fr.close();
+            br.close();
+            bw.close();
+            fw.close();
+
+            oldFile.delete();
+            File dump = new File("rooms.txt");
+            newFile.renameTo(dump);
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+}
